@@ -119,6 +119,30 @@
       "type": "integer",
       "default": 1,
       "unique": false
+    },
+    "posts": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::post.post",
+      "mappedBy": "users_permissions_user"
+    },
+    "post_comments": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::post-comment.post-comment",
+      "mappedBy": "users_permissions_users"
+    },
+    "saves_blogs": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::blog.blog",
+      "mappedBy": "user"
+    },
+    "post_like": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::post-like.post-like",
+      "inversedBy": "users_permissions_users"
     }
   }
 }

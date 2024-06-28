@@ -47,6 +47,18 @@
     },
     "BlogId": {
       "type": "integer"
+    },
+    "post_comments": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::post-comment.post-comment",
+      "mappedBy": "blog"
+    },
+    "user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "saves_blogs"
     }
   }
 }

@@ -780,6 +780,26 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
       Attribute.Required &
       Attribute.DefaultTo<'English'>;
     currentDay: Attribute.Integer & Attribute.DefaultTo<1>;
+    posts: Attribute.Relation<
+      'plugin::users-permissions.user',
+      'oneToMany',
+      'api::post.post'
+    >;
+    post_comments: Attribute.Relation<
+      'plugin::users-permissions.user',
+      'manyToMany',
+      'api::post-comment.post-comment'
+    >;
+    saves_blogs: Attribute.Relation<
+      'plugin::users-permissions.user',
+      'oneToMany',
+      'api::blog.blog'
+    >;
+    post_like: Attribute.Relation<
+      'plugin::users-permissions.user',
+      'manyToOne',
+      'api::post-like.post-like'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -821,6 +841,16 @@ export interface ApiBlogBlog extends Schema.CollectionType {
     day: Attribute.Relation<'api::blog.blog', 'oneToOne', 'api::day.day'>;
     content: Attribute.RichText;
     BlogId: Attribute.Integer;
+    post_comments: Attribute.Relation<
+      'api::blog.blog',
+      'oneToMany',
+      'api::post-comment.post-comment'
+    >;
+    user: Attribute.Relation<
+      'api::blog.blog',
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -939,6 +969,122 @@ export interface ApiKegelKegel extends Schema.CollectionType {
       Attribute.Private;
     updatedBy: Attribute.Relation<
       'api::kegel.kegel',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiPostPost extends Schema.CollectionType {
+  collectionName: 'posts';
+  info: {
+    singularName: 'post';
+    pluralName: 'posts';
+    displayName: 'Post';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    title: Attribute.String;
+    description: Attribute.Blocks;
+    postImage: Attribute.Media;
+    users_permissions_user: Attribute.Relation<
+      'api::post.post',
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
+    post_likes: Attribute.Relation<
+      'api::post.post',
+      'oneToMany',
+      'api::post-like.post-like'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<'api::post.post', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<'api::post.post', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+  };
+}
+
+export interface ApiPostCommentPostComment extends Schema.CollectionType {
+  collectionName: 'post_comments';
+  info: {
+    singularName: 'post-comment';
+    pluralName: 'post-comments';
+    displayName: 'postComment';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    comment: Attribute.Blocks;
+    blog: Attribute.Relation<
+      'api::post-comment.post-comment',
+      'manyToOne',
+      'api::blog.blog'
+    >;
+    users_permissions_users: Attribute.Relation<
+      'api::post-comment.post-comment',
+      'manyToMany',
+      'plugin::users-permissions.user'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::post-comment.post-comment',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::post-comment.post-comment',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiPostLikePostLike extends Schema.CollectionType {
+  collectionName: 'post_likes';
+  info: {
+    singularName: 'post-like';
+    pluralName: 'post-likes';
+    displayName: 'PostLike';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    post: Attribute.Relation<
+      'api::post-like.post-like',
+      'manyToOne',
+      'api::post.post'
+    >;
+    users_permissions_users: Attribute.Relation<
+      'api::post-like.post-like',
+      'oneToMany',
+      'plugin::users-permissions.user'
+    >;
+    like: Attribute.Enumeration<['like', 'heart', 'sad']>;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::post-like.post-like',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::post-like.post-like',
       'oneToOne',
       'admin::user'
     > &
@@ -1111,6 +1257,9 @@ declare module '@strapi/types' {
       'api::day.day': ApiDayDay;
       'api::kagel-time.kagel-time': ApiKagelTimeKagelTime;
       'api::kegel.kegel': ApiKegelKegel;
+      'api::post.post': ApiPostPost;
+      'api::post-comment.post-comment': ApiPostCommentPostComment;
+      'api::post-like.post-like': ApiPostLikePostLike;
       'api::quiz-contant.quiz-contant': ApiQuizContantQuizContant;
       'api::sort-note.sort-note': ApiSortNoteSortNote;
       'api::subscriber.subscriber': ApiSubscriberSubscriber;

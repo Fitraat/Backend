@@ -1,0 +1,36 @@
+{
+  "kind": "collectionType",
+  "collectionName": "post_likes",
+  "info": {
+    "singularName": "post-like",
+    "pluralName": "post-likes",
+    "displayName": "PostLike",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "post": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::post.post",
+      "inversedBy": "post_likes"
+    },
+    "users_permissions_users": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "plugin::users-permissions.user",
+      "mappedBy": "post_like"
+    },
+    "like": {
+      "type": "enumeration",
+      "enum": [
+        "like",
+        "heart",
+        "sad"
+      ]
+    }
+  }
+}
